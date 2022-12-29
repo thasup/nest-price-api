@@ -1,18 +1,19 @@
+### Create a new user
 POST http://localhost:3000/auth/signup
 Content-Type: application/json
 
 {
-  "email": "test@mymail.com",
-  "password": "pass"
+  "email": "test2@mail.com",
+  "password": "password"
 }
 
-### Sign in
+### Sign in as an existing user
 POST http://localhost:3000/auth/signin
 Content-Type: application/json
 
 {
-  "email": "test@mymail.com",
-  "password": "pass"
+  "email": "test2@mail.com",
+  "password": "password"
 }
 
 ### Find a particular user with ID
