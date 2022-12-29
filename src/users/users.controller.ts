@@ -17,6 +17,7 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserDto } from './dtos/user.dto';
 import { AuthService } from './auth.service';
 import { UsersService } from './users.service';
+import { CurrentUser } from './decorators/current-user.decorator';
 
 @Controller('auth')
 // UseInterceptors(new SerializeInterceptor(UserDto));
@@ -38,8 +39,8 @@ export class UsersController {
   // }
 
   @Get('/currentuser')
-  getCurrentUser(@Session() session: any) {
-    return this.userService.findOne(session.userId);
+  getCurrentUser(@CurrentUser() user: string) {
+    return user;
   }
 
   @Post('/signout')
