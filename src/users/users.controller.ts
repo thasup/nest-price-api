@@ -30,6 +30,10 @@ export class UsersController {
   createUser(@Body() { email, password }: CreateUserDto) {
     return this.authService.signup(email, password);
   }
+
+  @Post('/signin')
+  signin(@Body() { email, password }: CreateUserDto) {
+    return this.authService.signin(email, password);
   }
 
   @Get('/:id')
@@ -55,7 +59,6 @@ export class UsersController {
 
   @Patch('/:id')
   updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) {
-
     return this.userService.update(parseInt(id), body);
   }
 }
