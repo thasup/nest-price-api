@@ -10,14 +10,23 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     // Create a fake copy of the users service
+    const users: User[] = [];
+
     fakeUsersService = {
-      find: () => Promise.resolve([]),
-      create: (email: string, password: string) =>
-        Promise.resolve({
-          id: 1,
+      find: (email: string) => {
+        const filteredUsers = users.filter((user) => user.email === email);
+        return Promise.resolve(filteredUsers);
+      },
+      create: (email: string, password: string) => {
+        const user = {
+          id: Math.floor(Math.random() * 999999),
           email,
           password,
-        } as User),
+        } as User;
+
+        users.push(user);
+        return Promise.resolve(user);
+      },
     };
 
     const module = await Test.createTestingModule({
@@ -49,8 +58,7 @@ describe('AuthService', () => {
   });
 
   it('throws an error if user signs up with email that is in use', async () => {
-    fakeUsersService.find = () =>
-      Promise.resolve([{ id: 1, email: 'a', password: '1' } as User]);
+    await service.signup('john@doe.com', 'pass');
 
     await expect(service.signup('john@doe.com', 'pass')).rejects.toThrow(
       BadRequestException,
@@ -64,8 +72,7 @@ describe('AuthService', () => {
   });
 
   it('throws if an invalid password is provided', async () => {
-    fakeUsersService.find = () =>
-      Promise.resolve([{ email: 'john@doe.com', password: 'pass' } as User]);
+    await service.signup('john@doe.com', 'pass');
 
     await expect(service.signin('john@doe.com', 'password')).rejects.toThrow(
       BadRequestException,
