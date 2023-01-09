@@ -12,7 +12,6 @@ describe('Authentication System', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-
     await app.init();
   });
 
@@ -31,5 +30,23 @@ describe('Authentication System', () => {
         expect(id).toBeDefined();
         expect(email).toEqual(user.email);
       });
+  });
+
+  it('signup as a new user then get the currently logged in user', async () => {
+    const email = 'e2etest@mail.com';
+
+    const res = await request(app.getHttpServer())
+      .post('/auth/signup')
+      .send({ email, password: 'pass' })
+      .expect(201);
+
+    const cookie = res.get('Set-Cookie');
+
+    const { body } = await request(app.getHttpServer())
+      .get('/auth/currentuser')
+      .set('Cookie', cookie)
+      .expect(200);
+
+    expect(body.email).toEqual(email);
   });
 });
